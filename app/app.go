@@ -104,6 +104,15 @@ import (
 	"github.com/osmosis-labs/osmosis/x/gamm"
 	gammkeeper "github.com/osmosis-labs/osmosis/x/gamm/keeper"
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
+	"github.com/osmosis-labs/osmosis/x/gammibc"
+
+	gammibcmodule "github.com/osmosis-labs/osmosis/x/gammibc"
+	gammibckeeper "github.com/osmosis-labs/osmosis/x/gammibc/keeper"
+	gammibctypes "github.com/osmosis-labs/osmosis/x/gammibc/types"
+
+	//gammibcmodulekeeper "github.com/osmosis-labs/osmosis/x/gammibc/keeper"
+	//gammibcmoduletypes "github.com/osmosis-labs/osmosis/x/gammibc/types"
+
 	"github.com/osmosis-labs/osmosis/x/incentives"
 	incentiveskeeper "github.com/osmosis-labs/osmosis/x/incentives/keeper"
 	incentivestypes "github.com/osmosis-labs/osmosis/x/incentives/types"
@@ -160,6 +169,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		gamm.AppModuleBasic{},
+		gammibc.AppModuleBasic{},
 		txfees.AppModuleBasic{},
 		incentives.AppModuleBasic{},
 		lockup.AppModuleBasic{},
@@ -181,6 +191,7 @@ var (
 		ibctransfertypes.ModuleName:              {authtypes.Minter, authtypes.Burner},
 		claimtypes.ModuleName:                    {authtypes.Minter, authtypes.Burner},
 		gammtypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
+		gammibctypes.ModuleName:                  {authtypes.Minter, authtypes.Burner},
 		incentivestypes.ModuleName:               {authtypes.Minter, authtypes.Burner},
 		lockuptypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 		poolincentivestypes.ModuleName:           nil,
@@ -229,6 +240,7 @@ type OsmosisApp struct {
 	AuthzKeeper          authzkeeper.Keeper
 	ClaimKeeper          *claimkeeper.Keeper
 	GAMMKeeper           gammkeeper.Keeper
+	GAMMIBCKeeper        gammibckeeper.Keeper
 	IncentivesKeeper     incentiveskeeper.Keeper
 	LockupKeeper         lockupkeeper.Keeper
 	EpochsKeeper         epochskeeper.Keeper
@@ -241,6 +253,8 @@ type OsmosisApp struct {
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+
+	ScopedGammibcKeeper capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
@@ -281,7 +295,7 @@ func NewOsmosisApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		gammtypes.StoreKey, lockuptypes.StoreKey, claimtypes.StoreKey, incentivestypes.StoreKey,
+		gammtypes.StoreKey, gammibctypes.StoreKey, lockuptypes.StoreKey, claimtypes.StoreKey, incentivestypes.StoreKey,
 		epochstypes.StoreKey, poolincentivestypes.StoreKey, authzkeeper.StoreKey, txfeestypes.StoreKey,
 		bech32ibctypes.StoreKey,
 	)
@@ -368,7 +382,9 @@ func NewOsmosisApp(
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-	app.IBCKeeper.SetRouter(ibcRouter)
+
+	//ibcRouter.AddRoute(gammibcmoduletypes.ModuleName, gammibcModule)
+	//app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.Bech32IBCKeeper = *bech32ibckeeper.NewKeeper(
 		app.IBCKeeper.ChannelKeeper, appCodec, keys[bech32ibctypes.StoreKey],
@@ -400,6 +416,8 @@ func NewOsmosisApp(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks(), app.ClaimKeeper.Hooks()),
 	)
 	gammKeeper := gammkeeper.NewKeeper(appCodec, keys[gammtypes.StoreKey], app.GetSubspace(gammtypes.ModuleName), app.AccountKeeper, app.BankKeeper, app.DistrKeeper)
+	// gammKeeper := gammkeeper.NewKeeper(appCodec, keys[gammtypes.StoreKey], app.GetSubspace(gammtypes.ModuleName), app.AccountKeeper, app.BankKeeper, app.DistrKeeper)
+
 	lockupKeeper := lockupkeeper.NewKeeper(appCodec, keys[lockuptypes.StoreKey], app.AccountKeeper, app.BankKeeper)
 	epochsKeeper := epochskeeper.NewKeeper(appCodec, keys[epochstypes.StoreKey])
 	incentivesKeeper := incentiveskeeper.NewKeeper(appCodec, keys[incentivestypes.StoreKey], app.GetSubspace(incentivestypes.ModuleName), app.AccountKeeper, app.BankKeeper, *lockupKeeper, epochsKeeper)
@@ -444,6 +462,23 @@ func NewOsmosisApp(
 			app.ClaimKeeper.Hooks(),
 		),
 	)
+
+	// GAMMIBC TEST
+	scopedGammibcKeeper := app.CapabilityKeeper.ScopeToModule(gammibctypes.ModuleName)
+	app.ScopedGammibcKeeper = scopedGammibcKeeper
+	app.GAMMIBCKeeper = *gammibckeeper.NewKeeper(
+		appCodec,
+		keys[gammibctypes.StoreKey],
+		keys[gammibctypes.MemStoreKey],
+		app.GetSubspace(gammibctypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedGammibcKeeper,
+	)
+	gammibcModule := gammibcmodule.NewAppModule(appCodec, app.GAMMIBCKeeper, app.AccountKeeper, app.BankKeeper)
+
+	ibcRouter.AddRoute(gammibctypes.ModuleName, gammibcModule)
+	app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.TxFeesKeeper = txfeeskeeper.NewKeeper(
 		appCodec,
