@@ -322,7 +322,7 @@ func NewOsmosisApp(
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	app.CapabilityKeeper.Seal()
+	// app.CapabilityKeeper.Seal()
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -476,7 +476,7 @@ func NewOsmosisApp(
 		scopedGammibcKeeper,
 	)
 	gammibcModule := gammibcmodule.NewAppModule(appCodec, app.GAMMIBCKeeper, app.AccountKeeper, app.BankKeeper)
-
+	app.CapabilityKeeper.Seal()
 	ibcRouter.AddRoute(gammibctypes.ModuleName, gammibcModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
