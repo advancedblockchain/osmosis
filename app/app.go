@@ -471,11 +471,14 @@ func NewOsmosisApp(
 		keys[gammibctypes.StoreKey],
 		keys[gammibctypes.MemStoreKey],
 		app.GetSubspace(gammibctypes.ModuleName),
+		//app.GAMMIBCKeeper.ChannelKeeper,
+		//app.GAMMIBCKeeper.PortKeeper,
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedGammibcKeeper,
 	)
 	gammibcModule := gammibcmodule.NewAppModule(appCodec, app.GAMMIBCKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.CapabilityKeeper.Seal()
 	ibcRouter.AddRoute(gammibctypes.ModuleName, gammibcModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
@@ -557,6 +560,7 @@ func NewOsmosisApp(
 		poolincentives.NewAppModule(appCodec, app.PoolIncentivesKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
 		bech32ibc.NewAppModule(appCodec, app.Bech32IBCKeeper),
+		gammibcModule,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
