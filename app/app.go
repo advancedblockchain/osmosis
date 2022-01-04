@@ -593,6 +593,7 @@ func NewOsmosisApp(
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName,
 		gammtypes.ModuleName,
+		gammibctypes.ModuleName,
 		txfeestypes.ModuleName,
 		genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 		bech32ibctypes.ModuleName, // comes after ibctransfertypes
