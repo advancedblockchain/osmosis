@@ -3,15 +3,15 @@ package intergamm
 import (
 	"math/rand"
 
-	"github.com/osmosis-labs/osmosis/testutil/sample"
-	intergammsimulation "github.com/osmosis-labs/osmosis/x/intergamm/simulation"
-	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/osmosis-labs/osmosis/testutil/sample"
+	intergammsimulation "github.com/osmosis-labs/osmosis/x/intergamm/simulation"
+	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
 
 // avoid unused import issue
@@ -24,7 +24,7 @@ var (
 )
 
 const (
-    // this line is used by starport scaffolding # simapp/module/const
+// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -46,9 +46,8 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 
 // RandomizedParams creates randomized  param changes for the simulator
 func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-	
-	return []simtypes.ParamChange{
-	}
+
+	return []simtypes.ParamChange{}
 }
 
 // RegisterStoreDecoder registers a decoder

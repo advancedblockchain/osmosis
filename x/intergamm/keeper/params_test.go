@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	testkeeper "github.com/osmosis-labs/osmosis/testutil/keeper"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetParams(t *testing.T) {

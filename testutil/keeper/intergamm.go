@@ -3,16 +3,16 @@ package keeper
 import (
 	"testing"
 
-	"github.com/osmosis-labs/osmosis/x/intergamm/keeper"
-	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
+	"github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -46,7 +46,7 @@ func IntergammKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		ss,
 		nil,
-        nil,
+		nil,
 		capabilityKeeper.ScopeToModule("IntergammIBCKeeper"),
 	)
 
@@ -57,14 +57,14 @@ func IntergammKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		"IntergammParams",
 	)
 	k := keeper.NewKeeper(
-        appCodec,
-        storeKey,
-        memStoreKey,
-        paramsSubspace,
+		appCodec,
+		storeKey,
+		memStoreKey,
+		paramsSubspace,
 		IBCKeeper.ChannelKeeper,
 		&IBCKeeper.PortKeeper,
-        capabilityKeeper.ScopeToModule("IntergammScopedKeeper"),
-    )
+		capabilityKeeper.ScopeToModule("IntergammScopedKeeper"),
+	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, logger)
 

@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/osmosis-labs/osmosis/x/intergamm/types"
-    "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
-    keepertest "github.com/osmosis-labs/osmosis/testutil/keeper"
+	keepertest "github.com/osmosis-labs/osmosis/testutil/keeper"
+	"github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

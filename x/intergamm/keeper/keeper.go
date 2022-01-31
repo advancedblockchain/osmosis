@@ -15,23 +15,22 @@ import (
 type (
 	Keeper struct {
 		*cosmosibckeeper.Keeper
-		cdc      	codec.BinaryCodec
-		storeKey 	sdk.StoreKey
-		memKey   	sdk.StoreKey
-		paramstore	paramtypes.Subspace
-		
+		cdc        codec.BinaryCodec
+		storeKey   sdk.StoreKey
+		memKey     sdk.StoreKey
+		paramstore paramtypes.Subspace
 	}
 )
 
 func NewKeeper(
-    cdc codec.BinaryCodec,
-    storeKey,
-    memKey sdk.StoreKey,
+	cdc codec.BinaryCodec,
+	storeKey,
+	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
-    channelKeeper cosmosibckeeper.ChannelKeeper,
-    portKeeper cosmosibckeeper.PortKeeper,
-    scopedKeeper cosmosibckeeper.ScopedKeeper,
-    
+	channelKeeper cosmosibckeeper.ChannelKeeper,
+	portKeeper cosmosibckeeper.PortKeeper,
+	scopedKeeper cosmosibckeeper.ScopedKeeper,
+
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -46,11 +45,10 @@ func NewKeeper(
 			portKeeper,
 			scopedKeeper,
 		),
-		cdc:      	cdc,
-		storeKey: 	storeKey,
-		memKey:   	memKey,
-		paramstore:	ps,
-		
+		cdc:        cdc,
+		storeKey:   storeKey,
+		memKey:     memKey,
+		paramstore: ps,
 	}
 }
 
