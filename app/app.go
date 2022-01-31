@@ -104,14 +104,14 @@ import (
 	"github.com/osmosis-labs/osmosis/x/gamm"
 	gammkeeper "github.com/osmosis-labs/osmosis/x/gamm/keeper"
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
-	"github.com/osmosis-labs/osmosis/x/gammibc"
+	"github.com/osmosis-labs/osmosis/x/intergamm"
 
-	gammibcmodule "github.com/osmosis-labs/osmosis/x/gammibc"
-	gammibckeeper "github.com/osmosis-labs/osmosis/x/gammibc/keeper"
-	gammibctypes "github.com/osmosis-labs/osmosis/x/gammibc/types"
+	gammibcmodule "github.com/osmosis-labs/osmosis/x/intergamm"
+	gammibckeeper "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	gammibctypes "github.com/osmosis-labs/osmosis/x/intergamm/types"
 
-	//gammibcmodulekeeper "github.com/osmosis-labs/osmosis/x/gammibc/keeper"
-	//gammibcmoduletypes "github.com/osmosis-labs/osmosis/x/gammibc/types"
+	//gammibcmodulekeeper "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	//gammibcmoduletypes "github.com/osmosis-labs/osmosis/x/intergamm/types"
 
 	"github.com/osmosis-labs/osmosis/x/incentives"
 	incentiveskeeper "github.com/osmosis-labs/osmosis/x/incentives/keeper"
@@ -169,7 +169,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		gamm.AppModuleBasic{},
-		gammibc.AppModuleBasic{},
+		intergamm.AppModuleBasic{},
 		txfees.AppModuleBasic{},
 		incentives.AppModuleBasic{},
 		lockup.AppModuleBasic{},

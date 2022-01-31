@@ -3,23 +3,23 @@ package keeper
 import (
 	"testing"
 
+	"github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
-	"github.com/osmosis-labs/osmosis/x/intergamm/keeper"
-	"github.com/osmosis-labs/osmosis/x/intergamm/types"
+	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 )
 
-func GammibcKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func IntergammKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	logger := log.NewNopLogger()
 
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
@@ -39,32 +39,32 @@ func GammibcKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		types.Amino,
 		storeKey,
 		memStoreKey,
-		"GammibcSubSpace",
+		"IntergammSubSpace",
 	)
 	IBCKeeper := ibckeeper.NewKeeper(
 		appCodec,
 		storeKey,
 		ss,
 		nil,
-		nil,
-		capabilityKeeper.ScopeToModule("GammibcIBCKeeper"),
+        nil,
+		capabilityKeeper.ScopeToModule("IntergammIBCKeeper"),
 	)
 
 	paramsSubspace := typesparams.NewSubspace(appCodec,
 		types.Amino,
 		storeKey,
 		memStoreKey,
-		"GammibcParams",
+		"IntergammParams",
 	)
 	k := keeper.NewKeeper(
-		appCodec,
-		storeKey,
-		memStoreKey,
-		paramsSubspace,
+        appCodec,
+        storeKey,
+        memStoreKey,
+        paramsSubspace,
 		IBCKeeper.ChannelKeeper,
 		&IBCKeeper.PortKeeper,
-		capabilityKeeper.ScopeToModule("GammibcScopedKeeper"),
-	)
+        capabilityKeeper.ScopeToModule("IntergammScopedKeeper"),
+    )
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, logger)
 
