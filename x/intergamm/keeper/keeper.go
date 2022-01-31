@@ -19,6 +19,8 @@ type (
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
+
+		gammKeeper types.GammKeeper
 	}
 )
 
@@ -30,6 +32,7 @@ func NewKeeper(
 	channelKeeper cosmosibckeeper.ChannelKeeper,
 	portKeeper cosmosibckeeper.PortKeeper,
 	scopedKeeper cosmosibckeeper.ScopedKeeper,
+	gammKeeper types.GammKeeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -49,6 +52,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+		gammKeeper: gammKeeper,
 	}
 }
 

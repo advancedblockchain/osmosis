@@ -1,0 +1,24 @@
+syntax = "proto3";
+package osmosislabs.osmosis.intergamm;
+
+option go_package = "github.com/osmosis-labs/osmosis/x/intergamm/types";
+import "intergamm/smooth_weight_change_params.proto";
+import "gogoproto/gogo.proto";
+
+message PoolParams {
+
+  string swapFee = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"swap_fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string exitFee = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"exit_fee\"",
+    (gogoproto.nullable) = false
+  ];
+  SmoothWeightChangeParams smoothWeightChangeParams = 3 [
+    (gogoproto.moretags) = "yaml:\"smooth_weight_change_params\"",
+    (gogoproto.nullable) = true
+  ];
+}

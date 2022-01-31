@@ -476,6 +476,7 @@ func NewOsmosisApp(
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedGammibcKeeper,
+		&app.GAMMKeeper,
 	)
 	gammibcModule := gammibcmodule.NewAppModule(appCodec, app.GAMMIBCKeeper, app.AccountKeeper, app.BankKeeper)
 
