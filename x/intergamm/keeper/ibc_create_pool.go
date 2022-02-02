@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
+	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
 
@@ -24,7 +26,17 @@ func (k Keeper) OnRecvIbcCreatePoolPacket(ctx sdk.Context, packet channeltypes.P
 	}
 	packetAck.PoolId = poolId
 
-	// TODO: emit events related to creating a pool
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			gammtypes.TypeEvtPoolCreated,
+			sdk.NewAttribute(gammtypes.AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
+		),
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, gammtypes.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, sdk.AccAddress(sender).String()),
+		),
+	})
 
 	return packetAck, nil
 }
