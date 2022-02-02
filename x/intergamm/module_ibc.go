@@ -24,23 +24,7 @@ func (am AppModule) OnChanOpenInit(
 	counterparty channeltypes.Counterparty,
 	version string,
 ) error {
-
-	// Require portID is the portID module is bound to
-	boundPort := am.keeper.GetPort(ctx)
-	if boundPort != portID {
-		return sdkerrors.Wrapf(porttypes.ErrInvalidPort, "invalid port: %s, expected %s", portID, boundPort)
-	}
-
-	if version != types.Version {
-		return sdkerrors.Wrapf(types.ErrInvalidVersion, "got %s, expected %s", version, types.Version)
-	}
-
-	// Claim channel capability passed back by IBC module
-	if err := am.keeper.ClaimCapability(ctx, chanCap, host.ChannelCapabilityPath(portID, channelID)); err != nil {
-		return err
-	}
-
-	return nil
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "channel handshake must be initiated by controller chain")
 }
 
 // OnChanOpenTry implements the IBCModule interface
@@ -103,7 +87,7 @@ func (am AppModule) OnChanOpenConfirm(
 	portID,
 	channelID string,
 ) error {
-	return nil
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "channel handshake must be initiated by controller chain")
 }
 
 // OnChanCloseInit implements the IBCModule interface
@@ -178,60 +162,7 @@ func (am AppModule) OnAcknowledgementPacket(
 	acknowledgement []byte,
 	relayer sdk.AccAddress,
 ) error {
-	var ack channeltypes.Acknowledgement
-	if err := types.ModuleCdc.UnmarshalJSON(acknowledgement, &ack); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet acknowledgement: %v", err)
-	}
-
-	// this line is used by starport scaffolding # oracle/packet/module/ack
-
-	var modulePacketData types.IntergammPacketData
-	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
-	}
-
-	var eventType string
-
-	// Dispatch packet
-	switch packet := modulePacketData.Packet.(type) {
-	case *types.IntergammPacketData_IbcCreatePoolPacket:
-		err := am.keeper.OnAcknowledgementIbcCreatePoolPacket(ctx, modulePacket, *packet.IbcCreatePoolPacket, ack)
-		if err != nil {
-			return err
-		}
-		eventType = types.EventTypeIbcCreatePoolPacket
-		// this line is used by starport scaffolding # ibc/packet/module/ack
-	default:
-		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
-		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
-	}
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			eventType,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(types.AttributeKeyAck, fmt.Sprintf("%v", ack)),
-		),
-	)
-
-	switch resp := ack.Response.(type) {
-	case *channeltypes.Acknowledgement_Result:
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				eventType,
-				sdk.NewAttribute(types.AttributeKeyAckSuccess, string(resp.Result)),
-			),
-		)
-	case *channeltypes.Acknowledgement_Error:
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				eventType,
-				sdk.NewAttribute(types.AttributeKeyAckError, resp.Error),
-			),
-		)
-	}
-
-	return nil
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot receive acknowledgement on a host channel end, a host chain does not send a packet over the channel")
 }
 
 // OnTimeoutPacket implements the IBCModule interface
@@ -240,25 +171,7 @@ func (am AppModule) OnTimeoutPacket(
 	modulePacket channeltypes.Packet,
 	relayer sdk.AccAddress,
 ) error {
-	var modulePacketData types.IntergammPacketData
-	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
-	}
-
-	// Dispatch packet
-	switch packet := modulePacketData.Packet.(type) {
-	case *types.IntergammPacketData_IbcCreatePoolPacket:
-		err := am.keeper.OnTimeoutIbcCreatePoolPacket(ctx, modulePacket, *packet.IbcCreatePoolPacket)
-		if err != nil {
-			return err
-		}
-		// this line is used by starport scaffolding # ibc/packet/module/timeout
-	default:
-		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
-		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
-	}
-
-	return nil
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot cause a packet timeout on a host channel end, a host chain does not send a packet over the channel")
 }
 
 func (am AppModule) NegotiateAppVersion(
