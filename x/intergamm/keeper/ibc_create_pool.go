@@ -7,8 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
-	gammbalancer "github.com/osmosis-labs/osmosis/x/gamm/pool-models/balancer"
-	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
 
@@ -19,35 +17,9 @@ func (k Keeper) OnRecvIbcCreatePoolPacket(ctx sdk.Context, packet channeltypes.P
 		return packetAck, err
 	}
 
-	// Convert the intergamm types to original gamm types
 	sender := gammaddr.Module(types.ModuleName, []byte(fmt.Sprintf("%s/%s", packet.SourcePort, packet.SourceChannel)))
-	var changeParams *gammbalancer.SmoothWeightChangeParams
-	if data.Params != nil {
-		changeParams = &gammbalancer.SmoothWeightChangeParams{
-			StartTime: data.Params.SmoothWeightChangeParams.StartTime,
-			Duration:  data.Params.SmoothWeightChangeParams.Duration,
-		}
 
-		changeParams.InitialPoolWeights = make([]gammtypes.PoolAsset, len(data.Params.SmoothWeightChangeParams.InitialPoolWeights))
-		for i := 0; i < len(data.Assets); i++ {
-			changeParams.InitialPoolWeights[i] = gammtypes.PoolAsset(data.Params.SmoothWeightChangeParams.InitialPoolWeights[i])
-		}
-		changeParams.TargetPoolWeights = make([]gammtypes.PoolAsset, len(data.Params.SmoothWeightChangeParams.TargetPoolWeights))
-		for i := 0; i < len(data.Assets); i++ {
-			changeParams.TargetPoolWeights[i] = gammtypes.PoolAsset(data.Params.SmoothWeightChangeParams.TargetPoolWeights[i])
-		}
-	}
-	params := gammbalancer.BalancerPoolParams{
-		SwapFee:                  data.Params.SwapFee,
-		ExitFee:                  data.Params.ExitFee,
-		SmoothWeightChangeParams: changeParams,
-	}
-	assets := make([]gammtypes.PoolAsset, len(data.Assets))
-	for i := 0; i < len(data.Assets); i++ {
-		assets[i] = gammtypes.PoolAsset(*data.Assets[i])
-	}
-
-	poolId, err := k.gammKeeper.CreateBalancerPool(ctx, sender, params, assets, data.FuturePoolGovernor)
+	poolId, err := k.gammKeeper.CreateBalancerPool(ctx, sender, *data.Params, data.Assets, data.FuturePoolGovernor)
 	if err != nil {
 		return packetAck, err
 	}

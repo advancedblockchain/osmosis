@@ -2,8 +2,9 @@ syntax = "proto3";
 package osmosislabs.osmosis.intergamm;
 
 // this line is used by starport scaffolding # proto/packet/import
-import "intergamm/pool_asset.proto";
-import "intergamm/pool_params.proto";
+import "gogoproto/gogo.proto";
+import "osmosis/gamm/v1beta1/pool.proto";
+import "osmosis/gamm/pool-models/balancer/balancerPool.proto";
 
 option go_package = "github.com/osmosis-labs/osmosis/x/intergamm/types";
 
@@ -21,8 +22,9 @@ message NoData {}
 
 // IbcCreatePoolPacketData defines a struct for the packet payload
 message IbcCreatePoolPacketData {
-  PoolParams params = 1;
-  repeated PoolAsset assets = 2;
+  osmosis.gamm.poolmodels.BalancerPoolParams params = 1;
+  repeated osmosis.gamm.v1beta1.PoolAsset assets = 2
+      [ (gogoproto.nullable) = false ];
   string futurePoolGovernor = 3;
 }
 
