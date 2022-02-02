@@ -27,4 +27,20 @@ type GammKeeper interface {
 		poolAssets []gammtypes.PoolAsset,
 		futurePoolGovernor string,
 	) (uint64, error)
+
+	JoinPool(
+		ctx sdk.Context,
+		sender sdk.AccAddress,
+		poolId uint64,
+		shareOutAmount sdk.Int,
+		tokenInMaxs sdk.Coins,
+	) error
+
+	ExitPool(
+		ctx sdk.Context,
+		sender sdk.AccAddress,
+		poolId uint64,
+		shareInAmount sdk.Int,
+		tokenOutMins sdk.Coins,
+	) error
 }

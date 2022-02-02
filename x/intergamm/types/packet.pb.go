@@ -5,6 +5,8 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types1 "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	balancer "github.com/osmosis-labs/osmosis/x/gamm/pool-models/balancer"
@@ -29,6 +31,8 @@ type IntergammPacketData struct {
 	// Types that are valid to be assigned to Packet:
 	//	*IntergammPacketData_NoData
 	//	*IntergammPacketData_IbcCreatePoolPacket
+	//	*IntergammPacketData_IbcJoinPoolPacket
+	//	*IntergammPacketData_IbcExitPoolPacket
 	Packet isIntergammPacketData_Packet `protobuf_oneof:"packet"`
 }
 
@@ -77,9 +81,17 @@ type IntergammPacketData_NoData struct {
 type IntergammPacketData_IbcCreatePoolPacket struct {
 	IbcCreatePoolPacket *IbcCreatePoolPacketData `protobuf:"bytes,2,opt,name=ibcCreatePoolPacket,proto3,oneof" json:"ibcCreatePoolPacket,omitempty"`
 }
+type IntergammPacketData_IbcJoinPoolPacket struct {
+	IbcJoinPoolPacket *IbcJoinPoolPacketData `protobuf:"bytes,3,opt,name=ibcJoinPoolPacket,proto3,oneof" json:"ibcJoinPoolPacket,omitempty"`
+}
+type IntergammPacketData_IbcExitPoolPacket struct {
+	IbcExitPoolPacket *IbcExitPoolPacketData `protobuf:"bytes,4,opt,name=ibcExitPoolPacket,proto3,oneof" json:"ibcExitPoolPacket,omitempty"`
+}
 
 func (*IntergammPacketData_NoData) isIntergammPacketData_Packet()              {}
 func (*IntergammPacketData_IbcCreatePoolPacket) isIntergammPacketData_Packet() {}
+func (*IntergammPacketData_IbcJoinPoolPacket) isIntergammPacketData_Packet()   {}
+func (*IntergammPacketData_IbcExitPoolPacket) isIntergammPacketData_Packet()   {}
 
 func (m *IntergammPacketData) GetPacket() isIntergammPacketData_Packet {
 	if m != nil {
@@ -102,11 +114,27 @@ func (m *IntergammPacketData) GetIbcCreatePoolPacket() *IbcCreatePoolPacketData 
 	return nil
 }
 
+func (m *IntergammPacketData) GetIbcJoinPoolPacket() *IbcJoinPoolPacketData {
+	if x, ok := m.GetPacket().(*IntergammPacketData_IbcJoinPoolPacket); ok {
+		return x.IbcJoinPoolPacket
+	}
+	return nil
+}
+
+func (m *IntergammPacketData) GetIbcExitPoolPacket() *IbcExitPoolPacketData {
+	if x, ok := m.GetPacket().(*IntergammPacketData_IbcExitPoolPacket); ok {
+		return x.IbcExitPoolPacket
+	}
+	return nil
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*IntergammPacketData) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
 		(*IntergammPacketData_NoData)(nil),
 		(*IntergammPacketData_IbcCreatePoolPacket)(nil),
+		(*IntergammPacketData_IbcJoinPoolPacket)(nil),
+		(*IntergammPacketData_IbcExitPoolPacket)(nil),
 	}
 }
 
@@ -252,42 +280,254 @@ func (m *IbcCreatePoolPacketAck) GetPoolId() uint64 {
 	return 0
 }
 
+// IbcJoinPoolPacketData defines a struct for the packet payload
+type IbcJoinPoolPacketData struct {
+	Sender         string                                 `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	PoolId         uint64                                 `protobuf:"varint,2,opt,name=poolId,proto3" json:"poolId,omitempty"`
+	ShareOutAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=shareOutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"shareOutAmount"`
+	TokenInMaxs    []types1.Coin                          `protobuf:"bytes,4,rep,name=tokenInMaxs,proto3" json:"tokenInMaxs"`
+}
+
+func (m *IbcJoinPoolPacketData) Reset()         { *m = IbcJoinPoolPacketData{} }
+func (m *IbcJoinPoolPacketData) String() string { return proto.CompactTextString(m) }
+func (*IbcJoinPoolPacketData) ProtoMessage()    {}
+func (*IbcJoinPoolPacketData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ee6c60a9abfe85e, []int{4}
+}
+func (m *IbcJoinPoolPacketData) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IbcJoinPoolPacketData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IbcJoinPoolPacketData.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IbcJoinPoolPacketData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IbcJoinPoolPacketData.Merge(m, src)
+}
+func (m *IbcJoinPoolPacketData) XXX_Size() int {
+	return m.Size()
+}
+func (m *IbcJoinPoolPacketData) XXX_DiscardUnknown() {
+	xxx_messageInfo_IbcJoinPoolPacketData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IbcJoinPoolPacketData proto.InternalMessageInfo
+
+func (m *IbcJoinPoolPacketData) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *IbcJoinPoolPacketData) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *IbcJoinPoolPacketData) GetTokenInMaxs() []types1.Coin {
+	if m != nil {
+		return m.TokenInMaxs
+	}
+	return nil
+}
+
+type IbcJoinPoolPacketAck struct {
+}
+
+func (m *IbcJoinPoolPacketAck) Reset()         { *m = IbcJoinPoolPacketAck{} }
+func (m *IbcJoinPoolPacketAck) String() string { return proto.CompactTextString(m) }
+func (*IbcJoinPoolPacketAck) ProtoMessage()    {}
+func (*IbcJoinPoolPacketAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ee6c60a9abfe85e, []int{5}
+}
+func (m *IbcJoinPoolPacketAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IbcJoinPoolPacketAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IbcJoinPoolPacketAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IbcJoinPoolPacketAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IbcJoinPoolPacketAck.Merge(m, src)
+}
+func (m *IbcJoinPoolPacketAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *IbcJoinPoolPacketAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_IbcJoinPoolPacketAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IbcJoinPoolPacketAck proto.InternalMessageInfo
+
+type IbcExitPoolPacketData struct {
+	Sender        string                                 `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	PoolId        uint64                                 `protobuf:"varint,2,opt,name=poolId,proto3" json:"poolId,omitempty"`
+	ShareInAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=shareInAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"shareInAmount"`
+	TokenOutMins  []types1.Coin                          `protobuf:"bytes,4,rep,name=tokenOutMins,proto3" json:"tokenOutMins"`
+}
+
+func (m *IbcExitPoolPacketData) Reset()         { *m = IbcExitPoolPacketData{} }
+func (m *IbcExitPoolPacketData) String() string { return proto.CompactTextString(m) }
+func (*IbcExitPoolPacketData) ProtoMessage()    {}
+func (*IbcExitPoolPacketData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ee6c60a9abfe85e, []int{6}
+}
+func (m *IbcExitPoolPacketData) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IbcExitPoolPacketData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IbcExitPoolPacketData.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IbcExitPoolPacketData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IbcExitPoolPacketData.Merge(m, src)
+}
+func (m *IbcExitPoolPacketData) XXX_Size() int {
+	return m.Size()
+}
+func (m *IbcExitPoolPacketData) XXX_DiscardUnknown() {
+	xxx_messageInfo_IbcExitPoolPacketData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IbcExitPoolPacketData proto.InternalMessageInfo
+
+func (m *IbcExitPoolPacketData) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *IbcExitPoolPacketData) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *IbcExitPoolPacketData) GetTokenOutMins() []types1.Coin {
+	if m != nil {
+		return m.TokenOutMins
+	}
+	return nil
+}
+
+type IbcExitPoolPacketAck struct {
+}
+
+func (m *IbcExitPoolPacketAck) Reset()         { *m = IbcExitPoolPacketAck{} }
+func (m *IbcExitPoolPacketAck) String() string { return proto.CompactTextString(m) }
+func (*IbcExitPoolPacketAck) ProtoMessage()    {}
+func (*IbcExitPoolPacketAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ee6c60a9abfe85e, []int{7}
+}
+func (m *IbcExitPoolPacketAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IbcExitPoolPacketAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IbcExitPoolPacketAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IbcExitPoolPacketAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IbcExitPoolPacketAck.Merge(m, src)
+}
+func (m *IbcExitPoolPacketAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *IbcExitPoolPacketAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_IbcExitPoolPacketAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IbcExitPoolPacketAck proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*IntergammPacketData)(nil), "osmosislabs.osmosis.intergamm.IntergammPacketData")
 	proto.RegisterType((*NoData)(nil), "osmosislabs.osmosis.intergamm.NoData")
 	proto.RegisterType((*IbcCreatePoolPacketData)(nil), "osmosislabs.osmosis.intergamm.IbcCreatePoolPacketData")
 	proto.RegisterType((*IbcCreatePoolPacketAck)(nil), "osmosislabs.osmosis.intergamm.IbcCreatePoolPacketAck")
+	proto.RegisterType((*IbcJoinPoolPacketData)(nil), "osmosislabs.osmosis.intergamm.IbcJoinPoolPacketData")
+	proto.RegisterType((*IbcJoinPoolPacketAck)(nil), "osmosislabs.osmosis.intergamm.IbcJoinPoolPacketAck")
+	proto.RegisterType((*IbcExitPoolPacketData)(nil), "osmosislabs.osmosis.intergamm.IbcExitPoolPacketData")
+	proto.RegisterType((*IbcExitPoolPacketAck)(nil), "osmosislabs.osmosis.intergamm.IbcExitPoolPacketAck")
 }
 
 func init() { proto.RegisterFile("intergamm/packet.proto", fileDescriptor_6ee6c60a9abfe85e) }
 
 var fileDescriptor_6ee6c60a9abfe85e = []byte{
-	// 393 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x0b, 0xd3, 0x30,
-	0x14, 0xc7, 0x9b, 0x6d, 0x94, 0x99, 0xdd, 0x32, 0x99, 0x65, 0x60, 0x37, 0x0a, 0xc2, 0x40, 0x96,
-	0xb8, 0x29, 0xde, 0x44, 0xd6, 0x09, 0x3a, 0x04, 0x19, 0x3d, 0x7a, 0x4b, 0xbb, 0x58, 0xeb, 0xda,
-	0xa6, 0x24, 0xd9, 0xd0, 0x6f, 0xe1, 0xc7, 0xda, 0x41, 0x61, 0x47, 0x4f, 0x22, 0xdb, 0x17, 0x91,
-	0xa4, 0x59, 0x75, 0x38, 0xf5, 0xf6, 0x42, 0xfe, 0xff, 0xdf, 0xfb, 0xbf, 0x97, 0xc0, 0x41, 0x56,
-	0x2a, 0x26, 0x52, 0x5a, 0x14, 0xa4, 0xa2, 0xc9, 0x96, 0x29, 0x5c, 0x09, 0xae, 0x38, 0xba, 0xcf,
-	0x65, 0xc1, 0x65, 0x26, 0x73, 0x1a, 0x4b, 0x6c, 0x6b, 0xdc, 0x68, 0x87, 0x77, 0x53, 0x9e, 0x72,
-	0xa3, 0x24, 0xba, 0xaa, 0x4d, 0xc3, 0x91, 0x15, 0x12, 0xc3, 0xdb, 0xcf, 0x62, 0xa6, 0xe8, 0x8c,
-	0x54, 0x9c, 0xe7, 0x56, 0xf0, 0xe4, 0x4a, 0xa0, 0x2f, 0xa6, 0x05, 0xdf, 0xb0, 0x5c, 0x92, 0x98,
-	0xe6, 0xb4, 0x4c, 0x98, 0x68, 0x8a, 0x75, 0xe3, 0x0a, 0xbe, 0x00, 0xd8, 0x5f, 0x5d, 0x5a, 0xaf,
-	0x4d, 0xca, 0x17, 0x54, 0x51, 0xf4, 0x1c, 0xba, 0x25, 0xd7, 0x95, 0x07, 0xc6, 0x60, 0xd2, 0x9b,
-	0x3f, 0xc0, 0xff, 0x0c, 0x8d, 0xdf, 0x18, 0xf1, 0x2b, 0x27, 0xb2, 0x36, 0xf4, 0x01, 0xf6, 0xb3,
-	0x38, 0x59, 0x0a, 0x46, 0x15, 0xd3, 0xfd, 0x6a, 0xb6, 0xd7, 0x32, 0xb4, 0xa7, 0xff, 0xa1, 0xad,
-	0xfe, 0x74, 0x5a, 0xfc, 0x2d, 0x68, 0xd8, 0x85, 0x6e, 0xbd, 0xe0, 0xa0, 0x0b, 0xdd, 0x3a, 0x49,
-	0xf0, 0x15, 0xc0, 0x7b, 0x7f, 0xc1, 0xa0, 0xa5, 0xd6, 0x0b, 0x5a, 0x48, 0x3b, 0xdc, 0xc3, 0x26,
-	0x82, 0xe9, 0xae, 0x77, 0x57, 0xaf, 0x0e, 0x87, 0xbf, 0x6d, 0x6c, 0x6d, 0x2c, 0x91, 0xb5, 0xa2,
-	0x67, 0xd0, 0xa5, 0x52, 0x32, 0x25, 0xbd, 0xd6, 0xb8, 0x3d, 0xe9, 0xcd, 0x47, 0xd7, 0x10, 0xfb,
-	0x42, 0x58, 0x3b, 0x17, 0x5a, 0x17, 0x76, 0x0e, 0xdf, 0x47, 0x4e, 0x64, 0x4d, 0x08, 0x43, 0xf4,
-	0x6e, 0xa7, 0x76, 0xc2, 0x64, 0x7b, 0xc9, 0xf7, 0x4c, 0x94, 0x5c, 0x78, 0xed, 0x31, 0x98, 0xdc,
-	0x89, 0x6e, 0xdc, 0x04, 0x8f, 0xe0, 0xe0, 0xc6, 0x38, 0x8b, 0x64, 0x8b, 0x06, 0xd0, 0xd5, 0x89,
-	0x57, 0x1b, 0x33, 0x4d, 0x27, 0xb2, 0xa7, 0xf0, 0xf5, 0xe1, 0xe4, 0x83, 0xe3, 0xc9, 0x07, 0x3f,
-	0x4e, 0x3e, 0xf8, 0x7c, 0xf6, 0x9d, 0xe3, 0xd9, 0x77, 0xbe, 0x9d, 0x7d, 0xe7, 0xed, 0x2c, 0xcd,
-	0xd4, 0xfb, 0x5d, 0x8c, 0x13, 0x5e, 0x10, 0x1b, 0x7a, 0xaa, 0x5f, 0xe2, 0x72, 0x20, 0x1f, 0xc9,
-	0xaf, 0xaf, 0xab, 0x3e, 0x55, 0x4c, 0xc6, 0xae, 0xf9, 0x2e, 0x8f, 0x7f, 0x06, 0x00, 0x00, 0xff,
-	0xff, 0x08, 0x4f, 0x8e, 0xf5, 0xd4, 0x02, 0x00, 0x00,
+	// 595 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0xcf, 0x6e, 0xd3, 0x30,
+	0x18, 0x6f, 0xda, 0x2a, 0x5a, 0x5d, 0x40, 0xc2, 0x1b, 0xa5, 0x4c, 0x22, 0x9d, 0x22, 0x81, 0x26,
+	0xa1, 0x3a, 0x74, 0x4c, 0xdc, 0x10, 0x4a, 0x0b, 0x82, 0x80, 0xc6, 0xaa, 0x08, 0x71, 0xe0, 0xe6,
+	0xa4, 0xa6, 0x0b, 0x69, 0xec, 0x2a, 0x76, 0xa6, 0xf2, 0x16, 0x1c, 0x79, 0xa4, 0x5d, 0x90, 0x76,
+	0x44, 0x1c, 0x26, 0xd4, 0xbe, 0x08, 0xb2, 0xe3, 0x96, 0x84, 0x16, 0x36, 0xc4, 0x29, 0xb6, 0xfc,
+	0xfb, 0xf3, 0xfd, 0x3e, 0x7f, 0x0e, 0x68, 0x45, 0x54, 0x90, 0x74, 0x8c, 0x93, 0xc4, 0x99, 0xe2,
+	0x30, 0x26, 0x02, 0x4d, 0x53, 0x26, 0x18, 0xbc, 0xcb, 0x78, 0xc2, 0x78, 0xc4, 0x27, 0x38, 0xe0,
+	0x48, 0xaf, 0xd1, 0x0a, 0xbb, 0xbb, 0x33, 0x66, 0x63, 0xa6, 0x90, 0x8e, 0x5c, 0xe5, 0xa4, 0x5d,
+	0x2b, 0x54, 0x48, 0x27, 0xc0, 0x9c, 0x38, 0xa7, 0xbd, 0x80, 0x08, 0xdc, 0x73, 0x42, 0x16, 0x51,
+	0x7d, 0xde, 0xd1, 0x42, 0x8e, 0xf2, 0x5b, 0x02, 0xa6, 0x8c, 0x4d, 0x34, 0xe0, 0xb0, 0x04, 0x90,
+	0x07, 0xdd, 0x84, 0x8d, 0xc8, 0x44, 0x4a, 0x4e, 0x30, 0x0d, 0x49, 0xba, 0x5a, 0x0c, 0x57, 0x2c,
+	0xfb, 0x4b, 0x0d, 0x6c, 0x7b, 0xcb, 0xd2, 0x86, 0x2a, 0xc5, 0x33, 0x2c, 0x30, 0x7c, 0x0a, 0x4c,
+	0xca, 0xe4, 0xaa, 0x6d, 0xec, 0x19, 0xfb, 0xcd, 0x83, 0x7b, 0xe8, 0xaf, 0xa1, 0xd0, 0x1b, 0x05,
+	0x7e, 0x59, 0xf1, 0x35, 0x0d, 0x7e, 0x04, 0xdb, 0x51, 0x10, 0x0e, 0x52, 0x82, 0x05, 0x91, 0x7e,
+	0xb9, 0x76, 0xbb, 0xaa, 0xd4, 0x1e, 0x5f, 0xa2, 0xe6, 0xad, 0x33, 0xb5, 0xfc, 0x26, 0x51, 0x38,
+	0x02, 0x37, 0xa3, 0x20, 0x7c, 0xc5, 0x22, 0x5a, 0x70, 0xaa, 0x29, 0xa7, 0xc3, 0xcb, 0x9d, 0xca,
+	0x3c, 0xed, 0xb3, 0x2e, 0xa8, 0x5d, 0x9e, 0xcf, 0x22, 0x51, 0x70, 0xa9, 0x5f, 0xd5, 0xa5, 0xcc,
+	0x2b, 0xb8, 0x94, 0x0f, 0xfa, 0x5b, 0xc0, 0xcc, 0x87, 0xc9, 0xde, 0x02, 0x66, 0xde, 0x55, 0xfb,
+	0xab, 0x01, 0x6e, 0xff, 0xa1, 0x25, 0x70, 0x20, 0xf1, 0x29, 0x4e, 0xb8, 0xbe, 0xa8, 0x07, 0x2b,
+	0x7b, 0xe5, 0x2c, 0xe7, 0x20, 0x1f, 0x03, 0xd4, 0x2f, 0xdc, 0xfe, 0x50, 0x51, 0x7c, 0x4d, 0x85,
+	0x4f, 0x80, 0x89, 0x39, 0x27, 0x82, 0xb7, 0xab, 0x7b, 0xb5, 0xfd, 0xe6, 0x41, 0xa7, 0x2c, 0xa2,
+	0xa7, 0x0d, 0x49, 0xa6, 0x2b, 0x71, 0xfd, 0xfa, 0xd9, 0x45, 0xa7, 0xe2, 0x6b, 0x12, 0x44, 0x00,
+	0x7e, 0xc8, 0x44, 0x96, 0xaa, 0xda, 0x5e, 0xb0, 0x53, 0x92, 0x52, 0x96, 0xaa, 0x0b, 0x68, 0xf8,
+	0x1b, 0x4e, 0xec, 0x87, 0xa0, 0xb5, 0x21, 0x8e, 0x1b, 0xc6, 0xb0, 0x05, 0x4c, 0x59, 0xb1, 0x37,
+	0x52, 0x69, 0xea, 0xbe, 0xde, 0xd9, 0x73, 0x03, 0xdc, 0xda, 0x78, 0x55, 0x92, 0xc1, 0x09, 0x1d,
+	0x91, 0x54, 0x31, 0x1a, 0xbe, 0xde, 0x15, 0x94, 0xaa, 0x45, 0x25, 0xf8, 0x0e, 0xdc, 0xe0, 0x27,
+	0x38, 0x25, 0xc7, 0x99, 0x70, 0x13, 0x96, 0xd1, 0x7c, 0x50, 0x1a, 0x7d, 0x24, 0x13, 0x7d, 0xbf,
+	0xe8, 0xdc, 0x1f, 0x47, 0xe2, 0x24, 0x0b, 0x50, 0xc8, 0x12, 0x47, 0x3f, 0xc9, 0xfc, 0xd3, 0xe5,
+	0xa3, 0xd8, 0x11, 0x9f, 0xa6, 0x84, 0x23, 0x8f, 0x0a, 0xff, 0x37, 0x15, 0xe8, 0x82, 0xa6, 0x60,
+	0x31, 0xa1, 0x1e, 0x3d, 0xc2, 0x33, 0xde, 0xae, 0xab, 0x3e, 0xde, 0x41, 0x39, 0x17, 0xc9, 0x57,
+	0xbd, 0x6a, 0xe3, 0x80, 0x45, 0x54, 0x77, 0xb0, 0xc8, 0xb1, 0x5b, 0x60, 0x67, 0x2d, 0xa3, 0x1b,
+	0xc6, 0xcb, 0xf0, 0xeb, 0x13, 0xf4, 0xcf, 0xe1, 0xdf, 0x82, 0xeb, 0xaa, 0x6c, 0x8f, 0xfe, 0x57,
+	0xf6, 0xb2, 0x08, 0x1c, 0x80, 0x6b, 0x2a, 0xc6, 0x71, 0x26, 0x8e, 0x22, 0x7a, 0xe5, 0xec, 0x25,
+	0x92, 0x0e, 0x5f, 0xce, 0xe8, 0x86, 0x71, 0xff, 0xf5, 0xd9, 0xdc, 0x32, 0xce, 0xe7, 0x96, 0xf1,
+	0x63, 0x6e, 0x19, 0x9f, 0x17, 0x56, 0xe5, 0x7c, 0x61, 0x55, 0xbe, 0x2d, 0xac, 0xca, 0xfb, 0x5e,
+	0xa1, 0x5a, 0x3d, 0xae, 0x5d, 0xf9, 0xfe, 0x96, 0x1b, 0x67, 0xe6, 0xfc, 0xfa, 0x41, 0xab, 0xe2,
+	0x03, 0x53, 0xfd, 0xf4, 0x1e, 0xfd, 0x0c, 0x00, 0x00, 0xff, 0xff, 0x3c, 0xed, 0xed, 0x02, 0xba,
+	0x05, 0x00, 0x00,
 }
 
 func (m *IntergammPacketData) Marshal() (dAtA []byte, err error) {
@@ -361,6 +601,48 @@ func (m *IntergammPacketData_IbcCreatePoolPacket) MarshalToSizedBuffer(dAtA []by
 		}
 		i--
 		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+func (m *IntergammPacketData_IbcJoinPoolPacket) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IntergammPacketData_IbcJoinPoolPacket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.IbcJoinPoolPacket != nil {
+		{
+			size, err := m.IbcJoinPoolPacket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPacket(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	return len(dAtA) - i, nil
+}
+func (m *IntergammPacketData_IbcExitPoolPacket) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IntergammPacketData_IbcExitPoolPacket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.IbcExitPoolPacket != nil {
+		{
+			size, err := m.IbcExitPoolPacket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPacket(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
 	}
 	return len(dAtA) - i, nil
 }
@@ -471,6 +753,170 @@ func (m *IbcCreatePoolPacketAck) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
+func (m *IbcJoinPoolPacketData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IbcJoinPoolPacketData) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IbcJoinPoolPacketData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TokenInMaxs) > 0 {
+		for iNdEx := len(m.TokenInMaxs) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.TokenInMaxs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPacket(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	{
+		size := m.ShareOutAmount.Size()
+		i -= size
+		if _, err := m.ShareOutAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPacket(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.PoolId != 0 {
+		i = encodeVarintPacket(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintPacket(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *IbcJoinPoolPacketAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IbcJoinPoolPacketAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IbcJoinPoolPacketAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *IbcExitPoolPacketData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IbcExitPoolPacketData) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IbcExitPoolPacketData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TokenOutMins) > 0 {
+		for iNdEx := len(m.TokenOutMins) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.TokenOutMins[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPacket(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	{
+		size := m.ShareInAmount.Size()
+		i -= size
+		if _, err := m.ShareInAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPacket(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.PoolId != 0 {
+		i = encodeVarintPacket(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintPacket(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *IbcExitPoolPacketAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IbcExitPoolPacketAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IbcExitPoolPacketAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintPacket(dAtA []byte, offset int, v uint64) int {
 	offset -= sovPacket(v)
 	base := offset
@@ -518,6 +964,30 @@ func (m *IntergammPacketData_IbcCreatePoolPacket) Size() (n int) {
 	}
 	return n
 }
+func (m *IntergammPacketData_IbcJoinPoolPacket) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.IbcJoinPoolPacket != nil {
+		l = m.IbcJoinPoolPacket.Size()
+		n += 1 + l + sovPacket(uint64(l))
+	}
+	return n
+}
+func (m *IntergammPacketData_IbcExitPoolPacket) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.IbcExitPoolPacket != nil {
+		l = m.IbcExitPoolPacket.Size()
+		n += 1 + l + sovPacket(uint64(l))
+	}
+	return n
+}
 func (m *NoData) Size() (n int) {
 	if m == nil {
 		return 0
@@ -559,6 +1029,72 @@ func (m *IbcCreatePoolPacketAck) Size() (n int) {
 	if m.PoolId != 0 {
 		n += 1 + sovPacket(uint64(m.PoolId))
 	}
+	return n
+}
+
+func (m *IbcJoinPoolPacketData) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovPacket(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovPacket(uint64(m.PoolId))
+	}
+	l = m.ShareOutAmount.Size()
+	n += 1 + l + sovPacket(uint64(l))
+	if len(m.TokenInMaxs) > 0 {
+		for _, e := range m.TokenInMaxs {
+			l = e.Size()
+			n += 1 + l + sovPacket(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *IbcJoinPoolPacketAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *IbcExitPoolPacketData) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovPacket(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovPacket(uint64(m.PoolId))
+	}
+	l = m.ShareInAmount.Size()
+	n += 1 + l + sovPacket(uint64(l))
+	if len(m.TokenOutMins) > 0 {
+		for _, e := range m.TokenOutMins {
+			l = e.Size()
+			n += 1 + l + sovPacket(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *IbcExitPoolPacketAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -666,6 +1202,76 @@ func (m *IntergammPacketData) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			m.Packet = &IntergammPacketData_IbcCreatePoolPacket{v}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IbcJoinPoolPacket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &IbcJoinPoolPacketData{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Packet = &IntergammPacketData_IbcJoinPoolPacket{v}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IbcExitPoolPacket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &IbcExitPoolPacketData{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Packet = &IntergammPacketData_IbcExitPoolPacket{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -938,6 +1544,444 @@ func (m *IbcCreatePoolPacketAck) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IbcJoinPoolPacketData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IbcJoinPoolPacketData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IbcJoinPoolPacketData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ShareOutAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ShareOutAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenInMaxs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TokenInMaxs = append(m.TokenInMaxs, types1.Coin{})
+			if err := m.TokenInMaxs[len(m.TokenInMaxs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IbcJoinPoolPacketAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IbcJoinPoolPacketAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IbcJoinPoolPacketAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IbcExitPoolPacketData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IbcExitPoolPacketData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IbcExitPoolPacketData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ShareInAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ShareInAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenOutMins", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TokenOutMins = append(m.TokenOutMins, types1.Coin{})
+			if err := m.TokenOutMins[len(m.TokenOutMins)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IbcExitPoolPacketAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IbcExitPoolPacketAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IbcExitPoolPacketAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPacket(dAtA[iNdEx:])

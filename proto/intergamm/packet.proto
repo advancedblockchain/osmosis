@@ -3,6 +3,7 @@ package osmosislabs.osmosis.intergamm;
 
 // this line is used by starport scaffolding # proto/packet/import
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "osmosis/gamm/v1beta1/pool.proto";
 import "osmosis/gamm/pool-models/balancer/balancerPool.proto";
 
@@ -12,9 +13,9 @@ message IntergammPacketData {
   oneof packet {
     NoData noData = 1;
     // this line is used by starport scaffolding # ibc/packet/proto/field
-    IbcCreatePoolPacketData ibcCreatePoolPacket =
-        2; // this line is used by starport scaffolding #
-           // ibc/packet/proto/field/number
+    IbcCreatePoolPacketData ibcCreatePoolPacket = 2;
+    IbcJoinPoolPacketData ibcJoinPoolPacket = 3;
+    IbcExitPoolPacketData ibcExitPoolPacket = 4;
   }
 }
 
@@ -31,3 +32,31 @@ message IbcCreatePoolPacketData {
 // IbcCreatePoolPacketAck defines a struct for the packet acknowledgment
 message IbcCreatePoolPacketAck { uint64 poolId = 1; }
 // this line is used by starport scaffolding # ibc/packet/proto/message
+
+// IbcJoinPoolPacketData defines a struct for the packet payload
+message IbcJoinPoolPacketData {
+  string sender = 1;
+  uint64 poolId = 2;
+  string shareOutAmount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin tokenInMaxs = 4
+      [ (gogoproto.nullable) = false ];
+}
+
+message IbcJoinPoolPacketAck {}
+
+message IbcExitPoolPacketData {
+  string sender = 1;
+  uint64 poolId = 2;
+  string shareInAmount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  repeated cosmos.base.v1beta1.Coin tokenOutMins = 4
+      [ (gogoproto.nullable) = false ];
+}
+
+message IbcExitPoolPacketAck {}
