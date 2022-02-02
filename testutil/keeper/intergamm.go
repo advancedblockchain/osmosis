@@ -47,7 +47,7 @@ func IntergammKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		ss,
 		nil,
 		nil,
-		capabilityKeeper.ScopeToModule("IntergammIBCKeeper"),
+		capabilityKeeper.ScopeToModule("InterGammIBCKeeper"),
 	)
 
 	paramsSubspace := typesparams.NewSubspace(appCodec,

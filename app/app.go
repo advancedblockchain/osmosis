@@ -106,12 +106,9 @@ import (
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 	"github.com/osmosis-labs/osmosis/x/intergamm"
 
-	gammibcmodule "github.com/osmosis-labs/osmosis/x/intergamm"
-	gammibckeeper "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
-	gammibctypes "github.com/osmosis-labs/osmosis/x/intergamm/types"
-
-	//gammibcmodulekeeper "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
-	//gammibcmoduletypes "github.com/osmosis-labs/osmosis/x/intergamm/types"
+	intergammmodule "github.com/osmosis-labs/osmosis/x/intergamm"
+	intergammkeeper "github.com/osmosis-labs/osmosis/x/intergamm/keeper"
+	intergammtypes "github.com/osmosis-labs/osmosis/x/intergamm/types"
 
 	"github.com/osmosis-labs/osmosis/x/incentives"
 	incentiveskeeper "github.com/osmosis-labs/osmosis/x/incentives/keeper"
@@ -191,7 +188,7 @@ var (
 		ibctransfertypes.ModuleName:              {authtypes.Minter, authtypes.Burner},
 		claimtypes.ModuleName:                    {authtypes.Minter, authtypes.Burner},
 		gammtypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
-		gammibctypes.ModuleName:                  {authtypes.Minter, authtypes.Burner},
+		intergammtypes.ModuleName:                {authtypes.Minter, authtypes.Burner},
 		incentivestypes.ModuleName:               {authtypes.Minter, authtypes.Burner},
 		lockuptypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 		poolincentivestypes.ModuleName:           nil,
@@ -240,7 +237,7 @@ type OsmosisApp struct {
 	AuthzKeeper          authzkeeper.Keeper
 	ClaimKeeper          *claimkeeper.Keeper
 	GAMMKeeper           gammkeeper.Keeper
-	GAMMIBCKeeper        gammibckeeper.Keeper
+	InterGAMMKeeper      intergammkeeper.Keeper
 	IncentivesKeeper     incentiveskeeper.Keeper
 	LockupKeeper         lockupkeeper.Keeper
 	EpochsKeeper         epochskeeper.Keeper
@@ -254,7 +251,7 @@ type OsmosisApp struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
-	ScopedGammibcKeeper capabilitykeeper.ScopedKeeper
+	ScopedInterGammKeeper capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
@@ -295,7 +292,7 @@ func NewOsmosisApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		gammtypes.StoreKey, gammibctypes.StoreKey, lockuptypes.StoreKey, claimtypes.StoreKey, incentivestypes.StoreKey,
+		gammtypes.StoreKey, intergammtypes.StoreKey, lockuptypes.StoreKey, claimtypes.StoreKey, incentivestypes.StoreKey,
 		epochstypes.StoreKey, poolincentivestypes.StoreKey, authzkeeper.StoreKey, txfeestypes.StoreKey,
 		bech32ibctypes.StoreKey,
 	)
@@ -383,7 +380,7 @@ func NewOsmosisApp(
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 
-	//ibcRouter.AddRoute(gammibcmoduletypes.ModuleName, gammibcModule)
+	//ibcRouter.AddRoute(intergammmoduletypes.ModuleName, intergammModule)
 	//app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.Bech32IBCKeeper = *bech32ibckeeper.NewKeeper(
@@ -463,25 +460,23 @@ func NewOsmosisApp(
 		),
 	)
 
-	// GAMMIBC TEST
-	scopedGammibcKeeper := app.CapabilityKeeper.ScopeToModule(gammibctypes.ModuleName)
-	app.ScopedGammibcKeeper = scopedGammibcKeeper
-	app.GAMMIBCKeeper = *gammibckeeper.NewKeeper(
+	// InterGAMM TEST
+	scopedInterGammKeeper := app.CapabilityKeeper.ScopeToModule(intergammtypes.ModuleName)
+	app.ScopedInterGammKeeper = scopedInterGammKeeper
+	app.InterGAMMKeeper = *intergammkeeper.NewKeeper(
 		appCodec,
-		keys[gammibctypes.StoreKey],
-		keys[gammibctypes.MemStoreKey],
-		app.GetSubspace(gammibctypes.ModuleName),
-		//app.GAMMIBCKeeper.ChannelKeeper,
-		//app.GAMMIBCKeeper.PortKeeper,
+		keys[intergammtypes.StoreKey],
+		keys[intergammtypes.MemStoreKey],
+		app.GetSubspace(intergammtypes.ModuleName),
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
-		scopedGammibcKeeper,
+		scopedInterGammKeeper,
 		&app.GAMMKeeper,
 	)
-	gammibcModule := gammibcmodule.NewAppModule(appCodec, app.GAMMIBCKeeper, app.AccountKeeper, app.BankKeeper)
+	intergammModule := intergammmodule.NewAppModule(appCodec, app.InterGAMMKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.CapabilityKeeper.Seal()
-	ibcRouter.AddRoute(gammibctypes.ModuleName, gammibcModule)
+	ibcRouter.AddRoute(intergammtypes.ModuleName, intergammModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.TxFeesKeeper = txfeeskeeper.NewKeeper(
@@ -561,7 +556,7 @@ func NewOsmosisApp(
 		poolincentives.NewAppModule(appCodec, app.PoolIncentivesKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
 		bech32ibc.NewAppModule(appCodec, app.Bech32IBCKeeper),
-		gammibcModule,
+		intergammModule,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -594,7 +589,7 @@ func NewOsmosisApp(
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName,
 		gammtypes.ModuleName,
-		gammibctypes.ModuleName,
+		intergammtypes.ModuleName,
 		txfeestypes.ModuleName,
 		genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 		bech32ibctypes.ModuleName, // comes after ibctransfertypes
