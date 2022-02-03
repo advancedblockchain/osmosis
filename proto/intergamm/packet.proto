@@ -35,7 +35,6 @@ message IbcCreatePoolPacketAck { uint64 poolId = 1; }
 
 // IbcJoinPoolPacketData defines a struct for the packet payload
 message IbcJoinPoolPacketData {
-  string sender = 1;
   uint64 poolId = 2;
   string shareOutAmount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
@@ -48,7 +47,6 @@ message IbcJoinPoolPacketData {
 message IbcJoinPoolPacketAck {}
 
 message IbcExitPoolPacketData {
-  string sender = 1;
   uint64 poolId = 2;
   string shareInAmount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
