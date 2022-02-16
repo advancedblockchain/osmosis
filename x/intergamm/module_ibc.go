@@ -87,7 +87,7 @@ func (am AppModule) OnChanOpenConfirm(
 	portID,
 	channelID string,
 ) error {
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "channel handshake must be initiated by controller chain")
+	return nil
 }
 
 // OnChanCloseInit implements the IBCModule interface

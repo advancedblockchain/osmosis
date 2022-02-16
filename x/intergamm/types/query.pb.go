@@ -113,35 +113,139 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+type QueryChannelAddressRequest struct {
+	Port    string `protobuf:"bytes,1,opt,name=port,proto3" json:"port,omitempty"`
+	Channel string `protobuf:"bytes,2,opt,name=channel,proto3" json:"channel,omitempty"`
+}
+
+func (m *QueryChannelAddressRequest) Reset()         { *m = QueryChannelAddressRequest{} }
+func (m *QueryChannelAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryChannelAddressRequest) ProtoMessage()    {}
+func (*QueryChannelAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6dbccab1e37347e0, []int{2}
+}
+func (m *QueryChannelAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryChannelAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryChannelAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryChannelAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryChannelAddressRequest.Merge(m, src)
+}
+func (m *QueryChannelAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryChannelAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryChannelAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryChannelAddressRequest proto.InternalMessageInfo
+
+func (m *QueryChannelAddressRequest) GetPort() string {
+	if m != nil {
+		return m.Port
+	}
+	return ""
+}
+
+func (m *QueryChannelAddressRequest) GetChannel() string {
+	if m != nil {
+		return m.Channel
+	}
+	return ""
+}
+
+type QueryChannelAddressResponse struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryChannelAddressResponse) Reset()         { *m = QueryChannelAddressResponse{} }
+func (m *QueryChannelAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryChannelAddressResponse) ProtoMessage()    {}
+func (*QueryChannelAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6dbccab1e37347e0, []int{3}
+}
+func (m *QueryChannelAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryChannelAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryChannelAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryChannelAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryChannelAddressResponse.Merge(m, src)
+}
+func (m *QueryChannelAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryChannelAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryChannelAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryChannelAddressResponse proto.InternalMessageInfo
+
+func (m *QueryChannelAddressResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "osmosislabs.osmosis.intergamm.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "osmosislabs.osmosis.intergamm.QueryParamsResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "intergamm.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "intergamm.QueryParamsResponse")
+	proto.RegisterType((*QueryChannelAddressRequest)(nil), "intergamm.QueryChannelAddressRequest")
+	proto.RegisterType((*QueryChannelAddressResponse)(nil), "intergamm.QueryChannelAddressResponse")
 }
 
 func init() { proto.RegisterFile("intergamm/query.proto", fileDescriptor_6dbccab1e37347e0) }
 
 var fileDescriptor_6dbccab1e37347e0 = []byte{
-	// 307 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xb1, 0x4a, 0x73, 0x31,
-	0x14, 0xc7, 0x6f, 0x3e, 0x3e, 0x3b, 0xc4, 0x2d, 0x56, 0x91, 0xa2, 0x51, 0x0a, 0x45, 0x11, 0x9a,
-	0x70, 0xeb, 0x1b, 0xd4, 0xd1, 0x45, 0x3b, 0x76, 0xcb, 0x2d, 0x21, 0x06, 0x7a, 0x73, 0xd2, 0x9b,
-	0x54, 0xec, 0xea, 0x13, 0x08, 0xee, 0xce, 0x3e, 0x4a, 0xc7, 0x82, 0x8b, 0x93, 0x48, 0xaf, 0x0f,
-	0x22, 0x4d, 0x6e, 0xb5, 0x55, 0x50, 0xdc, 0x0e, 0x27, 0xff, 0xdf, 0x2f, 0xe7, 0x1c, 0xbc, 0xad,
-	0x8d, 0x97, 0x85, 0x12, 0x79, 0xce, 0x47, 0x63, 0x59, 0x4c, 0x98, 0x2d, 0xc0, 0x03, 0xd9, 0x07,
-	0x97, 0x83, 0xd3, 0x6e, 0x28, 0x32, 0xc7, 0xaa, 0x9a, 0x7d, 0x44, 0x1b, 0x75, 0x05, 0x0a, 0x42,
-	0x92, 0x2f, 0xaa, 0x08, 0x35, 0xf6, 0x14, 0x80, 0x1a, 0x4a, 0x2e, 0xac, 0xe6, 0xc2, 0x18, 0xf0,
-	0xc2, 0x6b, 0x30, 0xae, 0x7a, 0x3d, 0x19, 0x04, 0x0f, 0xcf, 0x84, 0x93, 0xf1, 0x2f, 0x7e, 0x9d,
-	0x66, 0xd2, 0x8b, 0x94, 0x5b, 0xa1, 0xb4, 0x09, 0xe1, 0x2a, 0xbb, 0xf3, 0x39, 0x95, 0x15, 0x85,
-	0xc8, 0x2b, 0x47, 0xb3, 0x8e, 0xc9, 0xe5, 0x82, 0xbc, 0x08, 0xcd, 0x9e, 0x1c, 0x8d, 0xa5, 0xf3,
-	0xcd, 0x3e, 0xde, 0x5a, 0xeb, 0x3a, 0x0b, 0xc6, 0x49, 0x72, 0x86, 0x6b, 0x11, 0xde, 0x45, 0x87,
-	0xe8, 0x78, 0xb3, 0xd3, 0x62, 0x3f, 0x2e, 0xc5, 0x22, 0xde, 0xfd, 0x3f, 0x7d, 0x39, 0x48, 0x7a,
-	0x15, 0xda, 0x79, 0x44, 0x78, 0x23, 0xc8, 0xc9, 0x03, 0xc2, 0xb5, 0x18, 0x21, 0xe9, 0x2f, 0xa6,
-	0xef, 0x33, 0x36, 0x3a, 0x7f, 0x41, 0xe2, 0x02, 0xcd, 0xf6, 0xed, 0xd3, 0xdb, 0xfd, 0xbf, 0x23,
-	0xd2, 0xe2, 0x2b, 0xec, 0xb2, 0xe6, 0x5f, 0x4f, 0xd4, 0x3d, 0x9f, 0xce, 0x29, 0x9a, 0xcd, 0x29,
-	0x7a, 0x9d, 0x53, 0x74, 0x57, 0xd2, 0x64, 0x56, 0xd2, 0xe4, 0xb9, 0xa4, 0x49, 0x3f, 0x55, 0xda,
-	0x5f, 0x8d, 0x33, 0x36, 0x80, 0x7c, 0x89, 0xb7, 0xd7, 0x5c, 0x37, 0x2b, 0x36, 0x3f, 0xb1, 0xd2,
-	0x65, 0xb5, 0x70, 0xf0, 0xd3, 0xf7, 0x00, 0x00, 0x00, 0xff, 0xff, 0xa1, 0x2f, 0x22, 0xd8, 0x20,
-	0x02, 0x00, 0x00,
+	// 406 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x41, 0x6b, 0xe2, 0x40,
+	0x18, 0x4d, 0xc4, 0x55, 0x9c, 0x85, 0x85, 0x9d, 0x75, 0x97, 0x90, 0xdd, 0xcd, 0x2e, 0x01, 0xdb,
+	0x52, 0x30, 0x83, 0xf6, 0xd0, 0x6b, 0x6b, 0xa1, 0x94, 0xf6, 0xd2, 0x7a, 0xec, 0xa5, 0x4c, 0x74,
+	0x88, 0x01, 0x33, 0x13, 0x33, 0xa3, 0x54, 0xc4, 0x4b, 0x7f, 0x41, 0xa1, 0xbf, 0xa2, 0xf4, 0x8f,
+	0x78, 0x14, 0x7a, 0xe9, 0xa9, 0x14, 0xed, 0x0f, 0x29, 0xce, 0x4c, 0xac, 0x5a, 0xa5, 0xb7, 0x6f,
+	0xde, 0xbc, 0xef, 0xbd, 0x97, 0x97, 0x01, 0x3f, 0x43, 0x2a, 0x48, 0x12, 0xe0, 0x28, 0x42, 0x9d,
+	0x2e, 0x49, 0xfa, 0x5e, 0x9c, 0x30, 0xc1, 0x60, 0x61, 0x0e, 0xdb, 0xc5, 0x80, 0x05, 0x4c, 0xa2,
+	0x68, 0x36, 0x29, 0x82, 0xfd, 0x27, 0x60, 0x2c, 0x68, 0x13, 0x84, 0xe3, 0x10, 0x61, 0x4a, 0x99,
+	0xc0, 0x22, 0x64, 0x94, 0xeb, 0xdb, 0xdd, 0x06, 0xe3, 0x11, 0xe3, 0xc8, 0xc7, 0x9c, 0x28, 0x5d,
+	0xd4, 0xab, 0xf8, 0x44, 0xe0, 0x0a, 0x8a, 0x71, 0x10, 0x52, 0x49, 0xd6, 0xdc, 0x5f, 0xef, 0x09,
+	0x62, 0x9c, 0xe0, 0x48, 0x6b, 0xb8, 0x45, 0x00, 0x2f, 0x66, 0x9b, 0xe7, 0x12, 0xac, 0x93, 0x4e,
+	0x97, 0x70, 0xe1, 0x1e, 0x83, 0x1f, 0x4b, 0x28, 0x8f, 0x19, 0xe5, 0x04, 0x22, 0x90, 0x53, 0xcb,
+	0x96, 0xf9, 0xdf, 0xdc, 0xf9, 0x5a, 0xfd, 0xee, 0xcd, 0x55, 0x3d, 0x45, 0xad, 0x65, 0x47, 0xcf,
+	0xff, 0x8c, 0xba, 0xa6, 0xb9, 0xa7, 0xc0, 0x96, 0x3a, 0x47, 0x2d, 0x4c, 0x29, 0x69, 0x1f, 0x36,
+	0x9b, 0x09, 0xe1, 0xa9, 0x0b, 0x84, 0x20, 0x1b, 0xb3, 0x44, 0x48, 0xb1, 0x42, 0x5d, 0xce, 0xd0,
+	0x02, 0xf9, 0x86, 0x22, 0x5b, 0x19, 0x09, 0xa7, 0x47, 0x77, 0x1f, 0xfc, 0x5e, 0xab, 0xa5, 0xb3,
+	0x59, 0x20, 0x8f, 0x15, 0xa4, 0xf5, 0xd2, 0x63, 0xf5, 0x21, 0x03, 0xbe, 0xc8, 0x4d, 0xd8, 0x03,
+	0x39, 0x15, 0x13, 0xfe, 0x5d, 0x48, 0xfe, 0xf1, 0xfb, 0x6d, 0x67, 0xd3, 0xb5, 0x32, 0x73, 0xcb,
+	0x37, 0x8f, 0xaf, 0x77, 0x99, 0x6d, 0x58, 0x42, 0xf2, 0x0f, 0x84, 0xbc, 0x8d, 0x7d, 0x9e, 0xce,
+	0x68, 0xb5, 0x6a, 0x78, 0x6f, 0x82, 0x6f, 0xcb, 0xb1, 0x61, 0x69, 0xd5, 0x61, 0x6d, 0x45, 0xf6,
+	0xd6, 0x67, 0x34, 0x1d, 0xe8, 0x44, 0x06, 0xaa, 0xc1, 0x83, 0x34, 0x44, 0x79, 0x43, 0x22, 0xdd,
+	0xe6, 0x95, 0x2e, 0x07, 0x0d, 0x66, 0xad, 0x0f, 0xd1, 0x40, 0xe3, 0xc3, 0xda, 0xd9, 0x68, 0xe2,
+	0x98, 0xe3, 0x89, 0x63, 0xbe, 0x4c, 0x1c, 0xf3, 0x76, 0xea, 0x18, 0xe3, 0xa9, 0x63, 0x3c, 0x4d,
+	0x1d, 0xe3, 0xb2, 0x12, 0x84, 0xa2, 0xd5, 0xf5, 0xbd, 0x06, 0x8b, 0xd6, 0xbb, 0x5c, 0x2f, 0xf8,
+	0x88, 0x7e, 0x4c, 0xb8, 0x9f, 0x93, 0x8f, 0x6c, 0xef, 0x2d, 0x00, 0x00, 0xff, 0xff, 0x7b, 0x65,
+	0x4d, 0x15, 0x00, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -158,6 +262,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries a list of ChannelAddress items.
+	ChannelAddress(ctx context.Context, in *QueryChannelAddressRequest, opts ...grpc.CallOption) (*QueryChannelAddressResponse, error)
 }
 
 type queryClient struct {
@@ -170,7 +276,16 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/osmosislabs.osmosis.intergamm.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/intergamm.Query/Params", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ChannelAddress(ctx context.Context, in *QueryChannelAddressRequest, opts ...grpc.CallOption) (*QueryChannelAddressResponse, error) {
+	out := new(QueryChannelAddressResponse)
+	err := c.cc.Invoke(ctx, "/intergamm.Query/ChannelAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -181,6 +296,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries a list of ChannelAddress items.
+	ChannelAddress(context.Context, *QueryChannelAddressRequest) (*QueryChannelAddressResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -189,6 +306,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) ChannelAddress(ctx context.Context, req *QueryChannelAddressRequest) (*QueryChannelAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelAddress not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -205,7 +325,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/osmosislabs.osmosis.intergamm.Query/Params",
+		FullMethod: "/intergamm.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -213,13 +333,35 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ChannelAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryChannelAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ChannelAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/intergamm.Query/ChannelAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ChannelAddress(ctx, req.(*QueryChannelAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "osmosislabs.osmosis.intergamm.Query",
+	ServiceName: "intergamm.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "ChannelAddress",
+			Handler:    _Query_ChannelAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -282,6 +424,73 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryChannelAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryChannelAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryChannelAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Channel) > 0 {
+		i -= len(m.Channel)
+		copy(dAtA[i:], m.Channel)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Channel)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Port) > 0 {
+		i -= len(m.Port)
+		copy(dAtA[i:], m.Port)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Port)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryChannelAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryChannelAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryChannelAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -310,6 +519,36 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryChannelAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Port)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Channel)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryChannelAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -430,6 +669,202 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryChannelAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryChannelAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryChannelAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Port = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Channel", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Channel = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryChannelAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryChannelAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryChannelAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
