@@ -16,6 +16,7 @@ message IntergammPacketData {
     IbcCreatePoolPacketData ibcCreatePoolPacket = 2;
     IbcJoinPoolPacketData ibcJoinPoolPacket = 3;
     IbcExitPoolPacketData ibcExitPoolPacket = 4;
+    IbcWithdrawPacketData ibcWithdrawPacket = 5;
   }
 }
 
@@ -58,3 +59,15 @@ message IbcExitPoolPacketData {
 }
 
 message IbcExitPoolPacketAck {}
+
+// IbcWithdrawPacketData defines a struct for the packet payload
+message IbcWithdrawPacketData {
+  string transferPort = 1;
+  string transferChannel = 2;
+  string receiver = 3;
+  repeated cosmos.base.v1beta1.Coin assets = 4
+      [ (gogoproto.nullable) = false ];
+}
+
+// IbcWithdrawPacketAck defines a struct for the packet acknowledgment
+message IbcWithdrawPacketAck {}

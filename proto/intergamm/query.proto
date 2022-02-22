@@ -13,11 +13,11 @@ option go_package = "github.com/osmosis-labs/osmosis/x/intergamm/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/osmosislabs/osmosis/intergamm/params";
+    option (google.api.http).get = "/intergamm/params";
   }
 // Queries a list of ChannelAddress items.
 	rpc ChannelAddress(QueryChannelAddressRequest) returns (QueryChannelAddressResponse) {
-		option (google.api.http).get = "/osmosis-labs/osmosis/intergamm/channel_address/{port}/{channel}";
+		option (google.api.http).get = "/intergamm/channel_address/{port}/{channel}";
 	}
 
 // this line is used by starport scaffolding # 2

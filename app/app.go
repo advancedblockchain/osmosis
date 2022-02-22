@@ -472,6 +472,7 @@ func NewOsmosisApp(
 		&app.IBCKeeper.PortKeeper,
 		scopedInterGammKeeper,
 		&app.GAMMKeeper,
+		&app.TransferKeeper,
 	)
 	intergammModule := intergammmodule.NewAppModule(appCodec, app.InterGAMMKeeper, app.AccountKeeper, app.BankKeeper)
 

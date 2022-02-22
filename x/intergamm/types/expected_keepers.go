@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	clienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
 	gammbalancer "github.com/osmosis-labs/osmosis/x/gamm/pool-models/balancer"
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 )
@@ -42,5 +43,18 @@ type GammKeeper interface {
 		poolId uint64,
 		shareInAmount sdk.Int,
 		tokenOutMins sdk.Coins,
+	) error
+}
+
+type TransferKeeper interface {
+	SendTransfer(
+		ctx sdk.Context,
+		sourcePort,
+		sourceChannel string,
+		token sdk.Coin,
+		sender sdk.AccAddress,
+		receiver string,
+		timeoutHeight clienttypes.Height,
+		timeoutTimestamp uint64,
 	) error
 }

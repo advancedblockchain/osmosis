@@ -65,6 +65,7 @@ func IntergammKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		&IBCKeeper.PortKeeper,
 		capabilityKeeper.ScopeToModule("IntergammScopedKeeper"),
 		nil,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, logger)
