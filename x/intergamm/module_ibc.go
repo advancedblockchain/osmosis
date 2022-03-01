@@ -120,7 +120,7 @@ func (am AppModule) OnRecvPacket(
 	// this line is used by starport scaffolding # oracle/packet/module/recv
 
 	var modulePacketData types.IntergammPacketData
-	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
+	if err := types.ModuleCdc.UnmarshalJSON(modulePacket.GetData(), &modulePacketData); err != nil {
 		return channeltypes.NewErrorAcknowledgement(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error()).Error())
 	}
 
