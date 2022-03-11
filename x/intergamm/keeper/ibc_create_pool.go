@@ -1,12 +1,10 @@
 package keeper
 
 import (
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
-	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
@@ -18,7 +16,7 @@ func (k Keeper) OnRecvIbcCreatePoolPacket(ctx sdk.Context, packet channeltypes.P
 		return packetAck, err
 	}
 
-	sender := gammaddr.Module(types.ModuleName, []byte(fmt.Sprintf("%s/%s", packet.SourcePort, packet.SourceChannel)))
+	sender := genChannelAddress(packet.SourcePort, packet.SourceChannel)
 
 	poolId, err := k.gammKeeper.CreateBalancerPool(ctx, sender, *data.Params, data.Assets, data.FuturePoolGovernor)
 	if err != nil {

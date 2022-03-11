@@ -1,12 +1,9 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
-	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
 
@@ -17,8 +14,9 @@ func (k Keeper) OnRecvIbcWithdrawPacket(ctx sdk.Context, packet channeltypes.Pac
 		return packetAck, err
 	}
 
-	sender := gammaddr.Module(types.ModuleName, []byte(fmt.Sprintf("%s/%s", packet.SourcePort, packet.SourceChannel)))
+	sender := genChannelAddress(packet.SourcePort, packet.SourceChannel)
 
+	// TODO: Investigate the relayer sequence mismatch error when we withdraw more than one asset
 	for _, as := range data.Assets {
 		err = k.tansferKeeper.SendTransfer(ctx, data.TransferPort, data.TransferChannel, as, sender, data.Receiver, clienttypes.NewHeight(0, 1000), 0) // TODO: Think about better values for timeout height and timestamp or get them from ibc packet
 		if err != nil {

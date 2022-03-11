@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"github.com/tendermint/starport/starport/pkg/cosmosibckeeper"
 )
@@ -60,4 +61,11 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// Generates an address for port and channel-id pair.
+// NOTE: Always use source port and channel-id to get an unique address
+func genChannelAddress(srcPort, srcChannel string) []byte {
+	// TODO: Use standard sdk methods for this
+	return gammaddr.Module(types.ModuleName, []byte(fmt.Sprintf("%s/%s", srcPort, srcChannel)))
 }

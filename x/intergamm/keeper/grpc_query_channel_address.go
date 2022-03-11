@@ -2,18 +2,18 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
-	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+// ChannelAddress returns the channel address associated with the given port and channel-id. Note that it will return error if there's no channel open
+// with the given port and channel-id.
 func (k Keeper) ChannelAddress(goCtx context.Context, req *types.QueryChannelAddressRequest) (*types.QueryChannelAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -31,7 +31,7 @@ func (k Keeper) ChannelAddress(goCtx context.Context, req *types.QueryChannelAdd
 		return nil, sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", req.Port, req.Channel)
 	}
 
-	addr := gammaddr.Module("intergamm", []byte(fmt.Sprintf("%s/%s", req.Port, req.Channel)))
+	addr := genChannelAddress(req.Port, req.Channel)
 
 	return &types.QueryChannelAddressResponse{
 		Address: sdk.AccAddress(addr).String(),

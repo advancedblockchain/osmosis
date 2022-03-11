@@ -1,12 +1,10 @@
 package keeper
 
 import (
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
-	gammaddr "github.com/osmosis-labs/osmosis/v043_temp/address"
 	gammtypes "github.com/osmosis-labs/osmosis/x/gamm/types"
 	"github.com/osmosis-labs/osmosis/x/intergamm/types"
 )
@@ -18,7 +16,7 @@ func (k Keeper) OnRecvIbcJoinPoolPacket(ctx sdk.Context, packet channeltypes.Pac
 		return packetAck, err
 	}
 
-	sender := gammaddr.Module(types.ModuleName, []byte(fmt.Sprintf("%s/%s", packet.SourcePort, packet.SourceChannel)))
+	sender := genChannelAddress(packet.SourcePort, packet.SourceChannel)
 
 	err = k.gammKeeper.JoinPool(ctx, sender, data.PoolId, data.ShareOutAmount, data.TokenInMaxs)
 	if err != nil {
